@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #282c36;
+            color: white;
+            margin: 0;
+            text-align: center;
+        }
+        .container {
+            text-align: center;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        #countdown {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Countdown Timer</h1>
+        <p id="countdown"></p>
+    </div>
+
+    <script>
+        function updateCountdown() {
+            const targetDate = new Date();
+            targetDate.setMonth(2);  // March (Months start from 0)
+            targetDate.setDate(30);
+            targetDate.setHours(3);
+            targetDate.setMinutes(10);
+            targetDate.setSeconds(0);
+
+            const now = new Date();
+            const diff = targetDate - now;
+
+            if (diff > 0) {
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const days = Math.floor(hours / 24);
+                const remainingHours = hours % 24;
+
+                document.getElementById("countdown").innerText =
+                    `${days} Days, ${remainingHours} Hours Remaining`;
+            } else {
+                document.getElementById("countdown").innerText = "Time reached!";
+            }
+        }
+
+        // Update the countdown every second
+        setInterval(updateCountdown, 1000);
+
+        // Initial call to display immediately
+        updateCountdown();
+    </script>
+</body>
+</html>
