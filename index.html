@@ -45,20 +45,19 @@
             targetDate.setMonth(2);  // March (Months start from 0)
             targetDate.setDate(30);
             targetDate.setHours(3);
-            targetDate.setMinutes(10);
+            targetDate.setMinutes(20);
             targetDate.setSeconds(0);
 
             const now = new Date();
             const diff = targetDate - now;
 
             if (diff > 0) {
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                const totalHours = Math.floor(diff / (1000 * 60 * 60));
+                const totalMinutes = Math.floor(diff / (1000 * 60));
+                const totalSeconds = Math.floor(diff / 1000);
 
                 document.getElementById("countdown").innerText =
-                    `${days} Days, ${hours} Hours, ${minutes} Minutes, ${seconds} Seconds Remaining`;
+                    `${totalHours} Hours, ${totalMinutes % 60} Minutes, ${totalSeconds % 60} Seconds Remaining`;
             } else {
                 document.getElementById("countdown").innerText = "Time reached!";
             }
