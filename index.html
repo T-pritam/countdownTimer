@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Countdown Timer</title>
     <style>
-        /* All original styles remain unchanged */
         body {
             font-family: 'Arial', sans-serif;
             display: flex;
@@ -157,10 +156,10 @@
                 const elapsed = (now - new Date(targetDate.getFullYear(), 0, 1));
                 const progress = ((elapsed / totalDuration) * 100).toFixed(2);
                 
-                document.getElementById("hours").innerText = totalHours.toString().padStart(2, '0');
-                document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
-                document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
-                document.getElementById("milliseconds").innerText = milliseconds.toString().padStart(3, '0');
+                document.getElementById("hours").innerText = totalHours;
+                document.getElementById("minutes").innerText = minutes;
+                document.getElementById("seconds").innerText = seconds;
+                document.getElementById("milliseconds").innerText = milliseconds;
                 document.getElementById("progress").innerText = progress;
                 document.getElementById("hours-left").innerText = totalHours;
             } else {
