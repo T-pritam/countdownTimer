@@ -8,7 +8,6 @@
         body {
             font-family: 'Arial', sans-serif;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -16,7 +15,6 @@
             color: #fff;
             margin: 0;
             text-align: center;
-            overflow: hidden;
         }
         .container {
             padding: 20px;
@@ -25,7 +23,6 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
             transition: transform 0.3s ease-in-out;
-            animation: float 4s infinite ease-in-out, glow 3s infinite alternate;
         }
         h1 {
             font-size: 2rem;
@@ -43,7 +40,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            animation: bounce 1.5s infinite alternate;
+            animation: pulse 1.5s infinite alternate;
         }
         .label {
             font-size: 0.9rem;
@@ -54,54 +51,18 @@
             font-size: 1.2rem;
             opacity: 0.8;
         }
-        .input-container {
-            margin-bottom: 20px;
-        }
-        input {
-            padding: 8px;
-            font-size: 1rem;
-            border: none;
-            border-radius: 5px;
-            outline: none;
-        }
-        button {
-            margin-left: 10px;
-            padding: 8px 12px;
-            font-size: 1rem;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
         }
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(10px); }
-            100% { transform: translateY(0px); }
-        }
-        @keyframes glow {
-            from { box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); }
-            to { box-shadow: 0 0 30px rgba(255, 255, 255, 0.8); }
-        }
-        @keyframes bounce {
-            from { transform: translateY(0px); }
-            to { transform: translateY(-10px); }
-        }
     </style>
 </head>
 <body>
-    <div class="input-container">
-        <input type="datetime-local" id="target-time">
-        <button onclick="setCountdown()">Start Countdown</button>
-    </div>
-    <div class="container" id="countdown-container" style="display: none;">
+    <div class="container">
         <h1>🚀 Countdown to the Big Moment! ⏳</h1>
         <div class="time-box">
             <div class="time">
@@ -116,10 +77,6 @@
                 <span id="seconds">--</span>
                 <span class="label">Seconds</span>
             </div>
-            <div class="time">
-                <span id="milliseconds">--</span>
-                <span class="label">Milliseconds</span>
-            </div>
         </div>
         <div class="stats">
             <p>⚡ You've already waited <span id="progress"></span>% of the way!</p>
@@ -128,21 +85,15 @@
     </div>
 
     <script>
-        let countdownInterval;
+        function updateCountdown() {
+            const targetDate = new Date();
+            targetDate.setMonth(2); // March
+            targetDate.setDate(30);
+            targetDate.setHours(3);
+            targetDate.setMinutes(20);
+            targetDate.setSeconds(0);
+            targetDate.setMilliseconds(0);
 
-        function setCountdown() {
-            clearInterval(countdownInterval);
-            const inputTime = document.getElementById("target-time").value;
-            if (!inputTime) {
-                alert("Please select a valid date and time.");
-                return;
-            }
-            document.getElementById("countdown-container").style.display = "block";
-            updateCountdown(new Date(inputTime));
-            countdownInterval = setInterval(() => updateCountdown(new Date(inputTime)), 10);
-        }
-
-        function updateCountdown(targetDate) {
             const now = new Date();
             const diff = targetDate - now;
 
@@ -150,23 +101,26 @@
                 const totalHours = Math.floor(diff / (1000 * 60 * 60));
                 const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-                const milliseconds = diff % 1000;
                 
                 const totalDuration = (targetDate - new Date(targetDate.getFullYear(), 0, 1));
                 const elapsed = (now - new Date(targetDate.getFullYear(), 0, 1));
                 const progress = ((elapsed / totalDuration) * 100).toFixed(2);
                 
+                const heartbeats = Math.floor(diff / 1000 * 1.2); // Approx. 72 bpm
+                
                 document.getElementById("hours").innerText = totalHours;
                 document.getElementById("minutes").innerText = minutes;
                 document.getElementById("seconds").innerText = seconds;
-                document.getElementById("milliseconds").innerText = milliseconds;
                 document.getElementById("progress").innerText = progress;
                 document.getElementById("hours-left").innerText = totalHours;
+                document.getElementById("heartbeats").innerText = heartbeats;
             } else {
-                document.querySelector("#countdown-container").innerHTML = "<h1>🎉 Time Reached! Let's Go! 🚀</h1>";
-                clearInterval(countdownInterval);
+                document.querySelector(".container").innerHTML = "<h1>🎉 Time Reached! Let's Go! 🚀</h1>";
             }
         }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
     </script>
 </body>
 </html>
