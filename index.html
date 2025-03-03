@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Flow</title>
+    <title>Countdown Timer</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -11,203 +11,116 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, #1a237e, #0d47a1);
+            background: linear-gradient(to right, #1e3c72, #2a5298);
             color: #fff;
             margin: 0;
-            overflow: hidden;
-        }
-
-        .container {
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-
-        h1 {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
             text-align: center;
         }
-
+        .container {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease-in-out;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            animation: fadeIn 2s ease-in-out;
+        }
         .time-box {
             display: flex;
-            gap: 1.5rem;
             justify-content: center;
-            margin: 2rem 0;
+            gap: 20px;
+            font-size: 1.8rem;
+            font-weight: bold;
         }
-
-        .time-unit {
-            text-align: center;
-            perspective: 100px;
-        }
-
-        .number {
-            font-size: 2.5rem;
-            font-weight: 300;
-            display: block;
-            position: relative;
-            transform-style: preserve-3d;
-        }
-
-        .flip {
-            animation: flip 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        @keyframes flip {
-            from { transform: rotateX(90deg); }
-            to { transform: rotateX(0deg); }
-        }
-
-        .stats {
-            display: grid;
-            gap: 1rem;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-        }
-
-        .stat-item {
+        .time {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            align-items: center;
+            animation: pulse 1.5s infinite alternate;
+        }
+        .label {
             font-size: 0.9rem;
-            opacity: 0.9;
+            color: #ddd;
         }
-
-        .progress {
-            height: 4px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 2px;
-            margin: 1.5rem 0;
-            overflow: hidden;
+        .stats {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            opacity: 0.8;
         }
-
-        .progress-bar {
-            height: 100%;
-            background: #4CAF50;
-            width: 0;
-            transition: width 0.5s ease;
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
         }
-
-        .floating-dots {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-
-        .dot {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            animation: float 12s infinite linear;
-        }
-
-        @keyframes float {
-            to { transform: translateY(-100vh) rotate(360deg); }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
 <body>
-    <div class="floating-dots"></div>
-    
     <div class="container">
-        <h1>⌛ Temporal Progress</h1>
-        
+        <h1>🚀 Countdown to the Big Moment! ⏳</h1>
         <div class="time-box">
-            <div class="time-unit">
-                <span class="number" id="hours">00</span>
+            <div class="time">
+                <span id="hours">--</span>
                 <span class="label">Hours</span>
             </div>
-            <div class="time-unit">
-                <span class="number" id="minutes">00</span>
+            <div class="time">
+                <span id="minutes">--</span>
                 <span class="label">Minutes</span>
             </div>
-            <div class="time-unit">
-                <span class="number" id="seconds">00</span>
+            <div class="time">
+                <span id="seconds">--</span>
                 <span class="label">Seconds</span>
             </div>
         </div>
-
-        <div class="progress">
-            <div class="progress-bar"></div>
-        </div>
-
         <div class="stats">
-            <div class="stat-item">
-                <span>Completion:</span>
-                <span id="progress">0%</span>
-            </div>
-            <div class="stat-item">
-                <span>Moments Passed:</span>
-                <span id="moments">0</span>
-            </div>
-            <div class="stat-item">
-                <span>Heartbeats:</span>
-                <span id="heartbeats">0</span>
-            </div>
+            <p>⚡ You've already waited <span id="progress"></span>% of the way!</p>
+            <p>⏳ Time Remaining: <span id="hours-left"></span> hours</p>
         </div>
     </div>
 
     <script>
-        function createDots() {
-            const container = document.querySelector('.floating-dots');
-            for (let i = 0; i < 20; i++) {
-                const dot = document.createElement('div');
-                dot.className = 'dot';
-                dot.style.width = dot.style.height = Math.random() * 8 + 2 + 'px';
-                dot.style.left = Math.random() * 100 + '%';
-                dot.style.animationDelay = Math.random() * 10 + 's';
-                container.appendChild(dot);
-            }
-        }
+        function updateCountdown() {
+            const targetDate = new Date();
+            targetDate.setMonth(2); // March
+            targetDate.setDate(30);
+            targetDate.setHours(3);
+            targetDate.setMinutes(20);
+            targetDate.setSeconds(0);
+            targetDate.setMilliseconds(0);
 
-        function animateNumber(element, newValue) {
-            if (element.textContent !== newValue) {
-                element.classList.add('flip');
-                setTimeout(() => element.classList.remove('flip'), 600);
-            }
-        }
-
-        function updateTimer() {
-            const targetDate = new Date(new Date().getFullYear(), 2, 30, 3, 20);
             const now = new Date();
-            let diff = targetDate - now;
+            const diff = targetDate - now;
 
-            if (diff < 0) {
-                targetDate.setFullYear(targetDate.getFullYear() + 1);
-                diff = targetDate - now;
+            if (diff > 0) {
+                const totalHours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                const totalDuration = (targetDate - new Date(targetDate.getFullYear(), 0, 1));
+                const elapsed = (now - new Date(targetDate.getFullYear(), 0, 1));
+                const progress = ((elapsed / totalDuration) * 100).toFixed(2);
+                
+                const heartbeats = Math.floor(diff / 1000 * 1.2); // Approx. 72 bpm
+                
+                document.getElementById("hours").innerText = totalHours;
+                document.getElementById("minutes").innerText = minutes;
+                document.getElementById("seconds").innerText = seconds;
+                document.getElementById("progress").innerText = progress;
+                document.getElementById("hours-left").innerText = totalHours;
+                document.getElementById("heartbeats").innerText = heartbeats;
+            } else {
+                document.querySelector(".container").innerHTML = "<h1>🎉 Time Reached! Let's Go! 🚀</h1>";
             }
-
-            const total = targetDate - new Date(targetDate.getFullYear(), 0, 1);
-            const elapsed = total - diff;
-            const progress = (elapsed / total * 100).toFixed(1);
-
-            const hours = Math.floor(diff / 3.6e6);
-            const minutes = Math.floor((diff % 3.6e6) / 6e4);
-            const seconds = Math.floor((diff % 6e4) / 1000);
-
-            // Update numbers with animation
-            animateNumber(document.getElementById('hours'), hours.toString().padStart(2, '0'));
-            animateNumber(document.getElementById('minutes'), minutes.toString().padStart(2, '0'));
-            animateNumber(document.getElementById('seconds'), seconds.toString().padStart(2, '0'));
-
-            // Update progress
-            document.getElementById('progress').textContent = `${progress}%`;
-            document.querySelector('.progress-bar').style.width = `${progress}%`;
-
-            // Update stats
-            document.getElementById('moments').textContent = 
-                Math.floor(elapsed / 1000).toLocaleString();
-            document.getElementById('heartbeats').textContent = 
-                Math.floor(elapsed / 1000 * 1.2).toLocaleString();
         }
 
-        createDots();
-        setInterval(updateTimer, 1000);
-        updateTimer();
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
     </script>
 </body>
 </html>
