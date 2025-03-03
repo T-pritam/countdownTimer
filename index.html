@@ -6,46 +6,59 @@
     <title>Countdown Timer</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f4f4f4;
-            color: #333;
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            color: #fff;
             margin: 0;
             text-align: center;
         }
         .container {
             padding: 20px;
-            background: white;
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease-in-out;
         }
         h1 {
-            font-size: 1.8rem;
+            font-size: 2rem;
             margin-bottom: 15px;
         }
         .time-box {
             display: flex;
             justify-content: center;
             gap: 20px;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: bold;
         }
         .time {
             display: flex;
             flex-direction: column;
             align-items: center;
+            animation: pulse 1.5s infinite alternate;
         }
         .label {
             font-size: 0.9rem;
-            color: #666;
+            color: #ddd;
+        }
+        .stats {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <h1>🚀 Countdown to the Big Moment! ⏳</h1>
         <div class="time-box">
             <div class="time">
                 <span id="hours">--</span>
@@ -60,12 +73,15 @@
                 <span class="label">Seconds</span>
             </div>
         </div>
+        <div class="stats">
+            <p>🔥 Time flies! <span id="days-left"></span> days remaining!</p>
+            <p>⚡ You've already waited <span id="progress"></span>% of the way!</p>
+        </div>
     </div>
 
     <script>
         function updateCountdown() {
             const targetDate = new Date();
-            targetDate.setFullYear(new Date().getFullYear());
             targetDate.setMonth(2); // March
             targetDate.setDate(30);
             targetDate.setHours(3);
@@ -80,12 +96,19 @@
                 const totalHours = Math.floor(diff / (1000 * 60 * 60));
                 const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                const daysLeft = Math.ceil(diff / (1000 * 60 * 60 * 24));
+                
+                const totalDuration = (targetDate - new Date(targetDate.getFullYear(), 0, 1));
+                const elapsed = (now - new Date(targetDate.getFullYear(), 0, 1));
+                const progress = ((elapsed / totalDuration) * 100).toFixed(2);
 
                 document.getElementById("hours").innerText = totalHours;
                 document.getElementById("minutes").innerText = minutes;
                 document.getElementById("seconds").innerText = seconds;
+                document.getElementById("days-left").innerText = daysLeft;
+                document.getElementById("progress").innerText = progress;
             } else {
-                document.querySelector(".container").innerHTML = "<h1>Time Reached!</h1>";
+                document.querySelector(".container").innerHTML = "<h1>🎉 Time Reached! Let's Go! 🚀</h1>";
             }
         }
 
