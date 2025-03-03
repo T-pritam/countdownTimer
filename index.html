@@ -27,6 +27,7 @@
         h1 {
             font-size: 2rem;
             margin-bottom: 15px;
+            animation: fadeIn 2s ease-in-out;
         }
         .time-box {
             display: flex;
@@ -54,6 +55,10 @@
             from { transform: scale(1); }
             to { transform: scale(1.1); }
         }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -74,8 +79,9 @@
             </div>
         </div>
         <div class="stats">
-            <p>🔥 Time flies! <span id="days-left"></span> days remaining!</p>
             <p>⚡ You've already waited <span id="progress"></span>% of the way!</p>
+            <p>⏳ Time Remaining: <span id="hours-left"></span> hours</p>
+            <p>💓 Heartbeats till then: <span id="heartbeats"></span> beats (approx.)</p>
         </div>
     </div>
 
@@ -96,17 +102,19 @@
                 const totalHours = Math.floor(diff / (1000 * 60 * 60));
                 const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-                const daysLeft = Math.ceil(diff / (1000 * 60 * 60 * 24));
                 
                 const totalDuration = (targetDate - new Date(targetDate.getFullYear(), 0, 1));
                 const elapsed = (now - new Date(targetDate.getFullYear(), 0, 1));
                 const progress = ((elapsed / totalDuration) * 100).toFixed(2);
-
+                
+                const heartbeats = Math.floor(diff / 1000 * 1.2); // Approx. 72 bpm
+                
                 document.getElementById("hours").innerText = totalHours;
                 document.getElementById("minutes").innerText = minutes;
                 document.getElementById("seconds").innerText = seconds;
-                document.getElementById("days-left").innerText = daysLeft;
                 document.getElementById("progress").innerText = progress;
+                document.getElementById("hours-left").innerText = totalHours;
+                document.getElementById("heartbeats").innerText = heartbeats;
             } else {
                 document.querySelector(".container").innerHTML = "<h1>🎉 Time Reached! Let's Go! 🚀</h1>";
             }
