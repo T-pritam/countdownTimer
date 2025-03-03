@@ -77,6 +77,10 @@
                 <span id="seconds">--</span>
                 <span class="label">Seconds</span>
             </div>
+            <div class="time">
+                <span id="milliseconds">---</span>
+                <span class="label">Milliseconds</span>
+            </div>
         </div>
         <div class="stats">
             <p>⚡ You've already waited <span id="progress"></span>% of the way!</p>
@@ -101,25 +105,24 @@
                 const totalHours = Math.floor(diff / (1000 * 60 * 60));
                 const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-                
+                const milliseconds = diff % 1000;
+
                 const totalDuration = (targetDate - new Date(targetDate.getFullYear(), 0, 1));
                 const elapsed = (now - new Date(targetDate.getFullYear(), 0, 1));
                 const progress = ((elapsed / totalDuration) * 100).toFixed(2);
-                
-                const heartbeats = Math.floor(diff / 1000 * 1.2); // Approx. 72 bpm
-                
+
                 document.getElementById("hours").innerText = totalHours;
                 document.getElementById("minutes").innerText = minutes;
                 document.getElementById("seconds").innerText = seconds;
+                document.getElementById("milliseconds").innerText = milliseconds.toString().padStart(3, '0');
                 document.getElementById("progress").innerText = progress;
                 document.getElementById("hours-left").innerText = totalHours;
-                document.getElementById("heartbeats").innerText = heartbeats;
             } else {
                 document.querySelector(".container").innerHTML = "<h1>🎉 Time Reached! Let's Go! 🚀</h1>";
             }
         }
 
-        setInterval(updateCountdown, 1000);
+        setInterval(updateCountdown, 10);
         updateCountdown();
     </script>
 </body>
