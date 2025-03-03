@@ -3,124 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Countdown Timer</title>
+    <title>Time Accelerator</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: linear-gradient(to right, #1e3c72, #2a5298);
-            color: #fff;
-            margin: 0;
-            text-align: center;
+        /* Existing styles remain, add these new ones */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
-        .container {
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            transition: transform 0.3s ease-in-out;
+
+        .particles {
+            position: fixed;
+            pointer-events: none;
+            z-index: -1;
         }
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 15px;
-            animation: fadeIn 2s ease-in-out;
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: particleFly linear infinite;
         }
-        .time-box {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            font-size: 1.8rem;
-            font-weight: bold;
+
+        @keyframes particleFly {
+            from { transform: translateX(-100vw) scale(0.5); }
+            to { transform: translateX(100vw) scale(1.5); }
         }
-        .time {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            animation: pulse 1.5s infinite alternate;
+
+        .progress-bar {
+            width: 80%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin: 20px auto;
+            overflow: hidden;
         }
-        .label {
-            font-size: 0.9rem;
-            color: #ddd;
+
+        .progress-fill {
+            height: 100%;
+            background: #ff4757;
+            width: 0;
+            transition: width 0.5s ease-out;
         }
-        .stats {
-            margin-top: 20px;
-            font-size: 1.2rem;
-            opacity: 0.8;
+
+        .flip {
+            animation: flip 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        @keyframes pulse {
-            from { transform: scale(1); }
-            to { transform: scale(1.1); }
+
+        @keyframes flip {
+            from { transform: rotateX(90deg); }
+            to { transform: rotateX(0deg); }
         }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+
+        .pulse-fast { animation: pulse 0.5s infinite alternate; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 Countdown to the Big Moment! ⏳</h1>
+        <h1>⏳ Temporal Velocity Accelerator 🚀</h1>
         <div class="time-box">
             <div class="time">
                 <span id="hours">--</span>
-                <span class="label">Hours</span>
+                <span class="label">Horizons</span>
             </div>
             <div class="time">
                 <span id="minutes">--</span>
-                <span class="label">Minutes</span>
+                <span class="label">Moments</span>
             </div>
             <div class="time">
                 <span id="seconds">--</span>
-                <span class="label">Seconds</span>
+                <span class="label">Heartbeats</span>
+            </div>
+            <div class="time">
+                <span id="milliseconds">--</span>
+                <span class="label">Fleeting</span>
             </div>
         </div>
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
         <div class="stats">
-            <p>⚡ You've already waited <span id="progress"></span>% of the way!</p>
-            <p>⏳ Time Remaining: <span id="hours-left"></span> hours</p>
-            <p>💓 Heartbeats till then: <span id="heartbeats"></span> beats (approx.)</p>
+            <p>🌀 Temporal Distortion: <span id="speed-factor">1x</span></p>
+            <p>🌌 Particles Accelerated: <span id="particle-count">0</span></p>
+            <p>💫 Micro-Moments: <span id="total-ms"></span></p>
+            <button id="time-btn" onclick="smashTime()">🔥 Smash Seconds!</button>
         </div>
     </div>
 
     <script>
+        let particles = 0;
+        let speedFactor = 1;
+        
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.top = Math.random() * 100 + 'vh';
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDuration = (Math.random() * 2 + 1) / speedFactor + 's';
+            document.querySelector('.particles').appendChild(particle);
+            particles++;
+            document.getElementById('particle-count').textContent = particles;
+            setTimeout(() => particle.remove(), 2000);
+        }
+
+        function smashTime() {
+            speedFactor += 0.2;
+            document.getElementById('speed-factor').textContent = speedFactor.toFixed(1) + 'x';
+            document.body.style.animation = `pulse-fast ${1/speedFactor}s infinite`;
+            document.querySelector('.container').style.transform = `scale(${1 + speedFactor/10})`;
+        }
+
         function updateCountdown() {
-            const targetDate = new Date();
-            targetDate.setMonth(2); // March
-            targetDate.setDate(30);
-            targetDate.setHours(3);
-            targetDate.setMinutes(20);
-            targetDate.setSeconds(0);
-            targetDate.setMilliseconds(0);
-
+            const targetDate = new Date(new Date().getFullYear(), 2, 30, 3, 20);
             const now = new Date();
-            const diff = targetDate - now;
+            let diff = targetDate - now;
 
-            if (diff > 0) {
-                const totalHours = Math.floor(diff / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-                
-                const totalDuration = (targetDate - new Date(targetDate.getFullYear(), 0, 1));
-                const elapsed = (now - new Date(targetDate.getFullYear(), 0, 1));
-                const progress = ((elapsed / totalDuration) * 100).toFixed(2);
-                
-                const heartbeats = Math.floor(diff / 1000 * 1.2); // Approx. 72 bpm
-                
-                document.getElementById("hours").innerText = totalHours;
-                document.getElementById("minutes").innerText = minutes;
-                document.getElementById("seconds").innerText = seconds;
-                document.getElementById("progress").innerText = progress;
-                document.getElementById("hours-left").innerText = totalHours;
-                document.getElementById("heartbeats").innerText = heartbeats;
-            } else {
-                document.querySelector(".container").innerHTML = "<h1>🎉 Time Reached! Let's Go! 🚀</h1>";
+            if (diff < 0) {
+                targetDate.setFullYear(targetDate.getFullYear() + 1);
+                diff = targetDate - now;
+            }
+
+            const totalMs = diff;
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            diff %= 1000 * 60 * 60;
+            const minutes = Math.floor(diff / (1000 * 60));
+            diff %= 1000 * 60;
+            const seconds = Math.floor(diff / 1000);
+            const milliseconds = diff % 1000;
+
+            // Visual updates
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            document.getElementById('milliseconds').textContent = String(milliseconds).padStart(3, '0');
+            document.querySelector('.progress-fill').style.width = 
+                `${100 - (totalMs / (targetDate - new Date(targetDate.getFullYear(), 0, 1)) * 100)}%`;
+            
+            document.getElementById('total-ms').textContent = 
+                (totalMs / 1000).toLocaleString('en-US', {maximumFractionDigits: 0}) + 'k';
+
+            // Create speed effect
+            if(speedFactor > 1) {
+                createParticle();
+                document.querySelectorAll('.time span:first-child').forEach(el => 
+                    el.style.animation = `flip ${0.5/speedFactor}s ease-out`
+                );
             }
         }
 
-        setInterval(updateCountdown, 1000);
+        // Initialize particles container
+        const particlesContainer = document.createElement('div');
+        particlesContainer.className = 'particles';
+        document.body.appendChild(particlesContainer);
+
+        setInterval(updateCountdown, 1000/speedFactor);
+        setInterval(() => speedFactor = Math.max(1, speedFactor * 0.99), 1000);
         updateCountdown();
     </script>
 </body>
