@@ -3,50 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Accelerator</title>
+    <title>Time Flow</title>
     <style>
-        /* Existing styles remain, add these new ones */
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .particles {
-            position: fixed;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .particle {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            animation: particleFly linear infinite;
-        }
-
-        @keyframes particleFly {
-            from { transform: translateX(-100vw) scale(0.5); }
-            to { transform: translateX(100vw) scale(1.5); }
-        }
-
-        .progress-bar {
-            width: 80%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-            margin: 20px auto;
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #1a237e, #0d47a1);
+            color: #fff;
+            margin: 0;
             overflow: hidden;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: #ff4757;
-            width: 0;
-            transition: width 0.5s ease-out;
+        .container {
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .time-box {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .time-unit {
+            text-align: center;
+            perspective: 100px;
+        }
+
+        .number {
+            font-size: 2.5rem;
+            font-weight: 300;
+            display: block;
+            position: relative;
+            transform-style: preserve-3d;
         }
 
         .flip {
-            animation: flip 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: flip 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @keyframes flip {
@@ -54,65 +61,117 @@
             to { transform: rotateX(0deg); }
         }
 
-        .pulse-fast { animation: pulse 0.5s infinite alternate; }
+        .stats {
+            display: grid;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .progress {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #4CAF50;
+            width: 0;
+            transition: width 0.5s ease;
+        }
+
+        .floating-dots {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .dot {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 12s infinite linear;
+        }
+
+        @keyframes float {
+            to { transform: translateY(-100vh) rotate(360deg); }
+        }
     </style>
 </head>
 <body>
+    <div class="floating-dots"></div>
+    
     <div class="container">
-        <h1>⏳ Temporal Velocity Accelerator 🚀</h1>
+        <h1>⌛ Temporal Progress</h1>
+        
         <div class="time-box">
-            <div class="time">
-                <span id="hours">--</span>
-                <span class="label">Horizons</span>
+            <div class="time-unit">
+                <span class="number" id="hours">00</span>
+                <span class="label">Hours</span>
             </div>
-            <div class="time">
-                <span id="minutes">--</span>
-                <span class="label">Moments</span>
+            <div class="time-unit">
+                <span class="number" id="minutes">00</span>
+                <span class="label">Minutes</span>
             </div>
-            <div class="time">
-                <span id="seconds">--</span>
-                <span class="label">Heartbeats</span>
-            </div>
-            <div class="time">
-                <span id="milliseconds">--</span>
-                <span class="label">Fleeting</span>
+            <div class="time-unit">
+                <span class="number" id="seconds">00</span>
+                <span class="label">Seconds</span>
             </div>
         </div>
-        <div class="progress-bar">
-            <div class="progress-fill"></div>
+
+        <div class="progress">
+            <div class="progress-bar"></div>
         </div>
+
         <div class="stats">
-            <p>🌀 Temporal Distortion: <span id="speed-factor">1x</span></p>
-            <p>🌌 Particles Accelerated: <span id="particle-count">0</span></p>
-            <p>💫 Micro-Moments: <span id="total-ms"></span></p>
-            <button id="time-btn" onclick="smashTime()">🔥 Smash Seconds!</button>
+            <div class="stat-item">
+                <span>Completion:</span>
+                <span id="progress">0%</span>
+            </div>
+            <div class="stat-item">
+                <span>Moments Passed:</span>
+                <span id="moments">0</span>
+            </div>
+            <div class="stat-item">
+                <span>Heartbeats:</span>
+                <span id="heartbeats">0</span>
+            </div>
         </div>
     </div>
 
     <script>
-        let particles = 0;
-        let speedFactor = 1;
-        
-        function createParticle() {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.top = Math.random() * 100 + 'vh';
-            particle.style.left = Math.random() * 100 + 'vw';
-            particle.style.animationDuration = (Math.random() * 2 + 1) / speedFactor + 's';
-            document.querySelector('.particles').appendChild(particle);
-            particles++;
-            document.getElementById('particle-count').textContent = particles;
-            setTimeout(() => particle.remove(), 2000);
+        function createDots() {
+            const container = document.querySelector('.floating-dots');
+            for (let i = 0; i < 20; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.style.width = dot.style.height = Math.random() * 8 + 2 + 'px';
+                dot.style.left = Math.random() * 100 + '%';
+                dot.style.animationDelay = Math.random() * 10 + 's';
+                container.appendChild(dot);
+            }
         }
 
-        function smashTime() {
-            speedFactor += 0.2;
-            document.getElementById('speed-factor').textContent = speedFactor.toFixed(1) + 'x';
-            document.body.style.animation = `pulse-fast ${1/speedFactor}s infinite`;
-            document.querySelector('.container').style.transform = `scale(${1 + speedFactor/10})`;
+        function animateNumber(element, newValue) {
+            if (element.textContent !== newValue) {
+                element.classList.add('flip');
+                setTimeout(() => element.classList.remove('flip'), 600);
+            }
         }
 
-        function updateCountdown() {
+        function updateTimer() {
             const targetDate = new Date(new Date().getFullYear(), 2, 30, 3, 20);
             const now = new Date();
             let diff = targetDate - now;
@@ -122,42 +181,33 @@
                 diff = targetDate - now;
             }
 
-            const totalMs = diff;
-            const hours = Math.floor(diff / (1000 * 60 * 60));
-            diff %= 1000 * 60 * 60;
-            const minutes = Math.floor(diff / (1000 * 60));
-            diff %= 1000 * 60;
-            const seconds = Math.floor(diff / 1000);
-            const milliseconds = diff % 1000;
+            const total = targetDate - new Date(targetDate.getFullYear(), 0, 1);
+            const elapsed = total - diff;
+            const progress = (elapsed / total * 100).toFixed(1);
 
-            // Visual updates
-            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
-            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
-            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
-            document.getElementById('milliseconds').textContent = String(milliseconds).padStart(3, '0');
-            document.querySelector('.progress-fill').style.width = 
-                `${100 - (totalMs / (targetDate - new Date(targetDate.getFullYear(), 0, 1)) * 100)}%`;
-            
-            document.getElementById('total-ms').textContent = 
-                (totalMs / 1000).toLocaleString('en-US', {maximumFractionDigits: 0}) + 'k';
+            const hours = Math.floor(diff / 3.6e6);
+            const minutes = Math.floor((diff % 3.6e6) / 6e4);
+            const seconds = Math.floor((diff % 6e4) / 1000);
 
-            // Create speed effect
-            if(speedFactor > 1) {
-                createParticle();
-                document.querySelectorAll('.time span:first-child').forEach(el => 
-                    el.style.animation = `flip ${0.5/speedFactor}s ease-out`
-                );
-            }
+            // Update numbers with animation
+            animateNumber(document.getElementById('hours'), hours.toString().padStart(2, '0'));
+            animateNumber(document.getElementById('minutes'), minutes.toString().padStart(2, '0'));
+            animateNumber(document.getElementById('seconds'), seconds.toString().padStart(2, '0'));
+
+            // Update progress
+            document.getElementById('progress').textContent = `${progress}%`;
+            document.querySelector('.progress-bar').style.width = `${progress}%`;
+
+            // Update stats
+            document.getElementById('moments').textContent = 
+                Math.floor(elapsed / 1000).toLocaleString();
+            document.getElementById('heartbeats').textContent = 
+                Math.floor(elapsed / 1000 * 1.2).toLocaleString();
         }
 
-        // Initialize particles container
-        const particlesContainer = document.createElement('div');
-        particlesContainer.className = 'particles';
-        document.body.appendChild(particlesContainer);
-
-        setInterval(updateCountdown, 1000/speedFactor);
-        setInterval(() => speedFactor = Math.max(1, speedFactor * 0.99), 1000);
-        updateCountdown();
+        createDots();
+        setInterval(updateTimer, 1000);
+        updateTimer();
     </script>
 </body>
 </html>
